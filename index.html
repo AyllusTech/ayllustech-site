@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayllus Tech – Inteligência em cada reparo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Novas cores baseadas na logo para o tema claro */
+      --navy: #0d1b2a;         /* Azul escuro principal da logo */
+      --cyan: #00c8d7;         /* Azul claro/Ciano da logo */
+      --cyan-hover: #00a0ac;   /* Ciano um pouco mais escuro para hover */
+      --bg-white: #ffffff;     /* Fundo principal branco */
+      --bg-alt: #f4f7f9;       /* Fundo cinza/azul bem clarinho para alternar seções */
+      --text-main: #1a202c;    /* Cor principal do texto (quase preto) */
+      --text-muted: #4a5568;   /* Cor de textos secundários/descrições (Cinza) */
+      --border-color: #e2e8f0; /* Cor das bordas */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Exo 2', sans-serif;
+      background-color: var(--bg-white);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* ── CIRCUIT BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(13,27,42,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(13,27,42,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 6%; /* <-- Padding reduzido para afinar o menu */
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .nav-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      align-items: center;
+    }
+
+    .nav-brand-title {
+      font-size: 1.8rem; 
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+
+    .nav-brand-title .ayllus { color: var(--navy); }
+    .nav-brand-title .tech { color: var(--text-muted); }
+
+    .nav-brand-slogan {
+      font-size: .75rem;
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--cyan);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      display: block;
+      text-align: center;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      transition: color .25s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--cyan);
+      transform: scaleX(0);
+      transition: transform .25s;
+    }
+
+    .nav-links a:hover { color: var(--navy); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-cta {
+      background: var(--navy);
+      color: var(--bg-white) !important;
+      padding: 9px 22px;
+      border-radius: 4px;
+      font-weight: 700 !important;
+      font-size: .82rem !important;
+      transition: background .25s, transform .2s !important;
+    }
+
+    .nav-cta:hover { background: var(--cyan) !important; transform: translateY(-1px); }
+    .nav-cta::after { display: none !important; }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--navy);
+      border-radius: 2px;
+      transition: .3s;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 110px 6% 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,200,215,.08) 0%, transparent 70%);
+      top: -100px; right: -150px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .75rem;
+      color: var(--navy);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      border: 1px solid rgba(13,27,42,.15);
+      padding: 6px 14px;
+      border-radius: 3px;
+      margin-bottom: 28px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -.01em;
+      color: var(--navy);
+      margin-bottom: 22px;
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--cyan);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 500px;
+      margin-bottom: 42px;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp .7s .3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: var(--bg-white);
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      padding: 15px 32px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background .25s, transform .2s, box-shadow .25s;
+      box-shadow: 0 6px 20px rgba(13,27,42,.15);
+    }
+
+    .btn-primary:hover {
+      background: var(--cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,200,215,.3);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1.5px solid var(--navy);
+      color: var(--navy);
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      font-size: .95rem;
+      padding: 15px 32px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: border-color .25s, background .25s, transform .2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(13,27,42,.05);
+      transform: translateY(-2px);
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 100px 6%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .72rem;
+      color: var(--cyan);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      line-height: 1.12;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .section-title em {
+      font-style: normal;
+      color: var(--cyan);
+    }
+
+    .section-sub {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .section-header { margin-bottom: 60px; }
+
+    /* ── SERVIÇOS ── */
+    #servicos { background: var(--bg-alt); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 40px 32px;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,.02);
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--cyan);
+      box-shadow: 0 12px 30px rgba(0,0,0,.06);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: rgba(0,200,215,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 2rem;
+      transition: background .3s;
+    }
+
+    .service-card:hover .service-icon { background: rgba(0,200,215,.18); }
+
+    .service-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--navy);
+    }
+
+    .service-card p {
+      font-size: .9rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── DIFERENCIAIS ── */
+    #diferenciais { background: var(--bg-white); }
+
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+    }
+
+    .diff-item {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .diff-num {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .85rem;
+      font-weight: bold;
+      color: var(--cyan);
+      letter-spacing: .1em;
+    }
+
+    .diff-icon {
+      font-size: 2rem;
+    }
+
+    .diff-item h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .diff-item p {
+      font-size: .88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .diff-divider {
+      width: 36px;
+      height: 2px;
+      background: var(--cyan);
+      border-radius: 2px;
+    }
+
+    /* ── CTA STRIP ── */
+    #cta-strip {
+      background: linear-gradient(135deg, var(--bg-alt), var(--bg-white));
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 80px 6%;
+      text-align: center;
+    }
+
+    #cta-strip h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    #cta-strip p {
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      font-size: 1rem;
+    }
+
+    /* ── CONTATO ── */
+    #contato { background: var(--bg-alt); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .contact-info { display: flex; flex-direction: column; gap: 28px; }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    .contact-item-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      color: var(--navy);
+    }
+
+    .contact-item-text label {
+      display: block;
+      font-size: .72rem;
+      color: var(--cyan);
+      font-weight: bold;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .contact-item-text a,
+    .contact-item-text span {
+      color: var(--navy);
+      text-decoration: none;
+      font-size: .97rem;
+      font-weight: 600;
+      transition: color .25s;
+    }
+
+    .contact-item-text a:hover { color: var(--cyan); }
+
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-group label {
+      font-size: .78rem;
+      color: var(--text-muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: 'Exo 2', sans-serif;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .25s, box-shadow .25s;
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(0,200,215,.15);
+    }
+
+    .form-group select option { background: var(--bg-white); color: var(--text-main); }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .btn-submit {
+      background: var(--navy);
+      color: var(--bg-white);
+      border: none;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .25s, transform .2s, box-shadow .25s;
+      box-shadow: 0 6px 20px rgba(13,27,42,.15);
+      margin-top: 4px;
+    }
+
+    .btn-submit:hover {
+      background: var(--cyan);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,200,215,.3);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      padding: 48px 6% 32px;
+      color: var(--bg-white);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      font-size: .82rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: .82rem;
+      transition: color .25s;
+    }
+
+    .footer-links a:hover { color: var(--cyan); }
+
+    /* ── WHATSAPP FLOAT ── */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
+      width: 58px;
+      height: 58px;
+      background: #25d366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.45);
+      transition: transform .25s, box-shadow .25s;
+      text-decoration: none;
+    }
+
+    .wa-float:hover {
+      transform: translateY(-3px) scale(1.06);
+      box-shadow: 0 8px 30px rgba(37,211,102,.55);
+    }
+
+    .wa-float svg { width: 30px; height: 30px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px; left: 0; right: 0;
+        background: rgba(255,255,255,.98);
+        border-bottom: 1px solid var(--border-color);
+        padding: 20px 6%;
+        gap: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,.05);
+      }
+      .hamburger { display: flex; }
+      .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#hero" class="nav-logo">
+      <!-- Altura reduzida para afinar o menu superior -->
+      <img src="icone.png" alt="Símbolo Ayllus Tech" style="height: 55px; width: auto; object-fit: contain;" />
+      
+      <div class="nav-brand">
+        <!-- Textos com tamanhos iguais, cores separadas (Azul e Cinza) e centralizados -->
+        <span class="nav-brand-title">
+          <span class="ayllus">Ayllus</span> <span class="tech">Tech</span>
+        </span>
+        <span class="nav-brand-slogan">Inteligência em cada reparo.</span>
+      </div>
+    </a>
+    
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#diferenciais">Diferenciais</a></li>
+      <li><a href="#contato">Contato</a></li>
+      <li><a href="https://wa.me/5548933815336" target="_blank" class="nav-cta">Solicitar Orçamento</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Assistência Técnica Especializada</div>
+      <h1>Reparo com<br><em>inteligência</em><br>e precisão.</h1>
+      <p class="hero-sub">Da placa eletrônica ao vídeo game, a Ayllus Tech resolve com diagnóstico preciso e atendimento de verdade — sem enrolação.</p>
+      <div class="hero-btns">
+        <a href="https://wa.me/5548933815336" target="_blank" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.558 4.136 1.535 5.876L.057 23.43a.75.75 0 00.918.932l5.762-1.512A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.718 9.718 0 01-4.963-1.363l-.355-.212-3.683.967.984-3.595-.232-.369A9.718 9.718 0 012.25 12C2.25 6.61 6.61 2.25 12 2.25S21.75 6.61 21.75 12 17.39 21.75 12 21.75z"/></svg>
+          Falar no WhatsApp
+        </a>
+        <a href="#servicos" class="btn-secondary">
+          Ver Serviços
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicos">
+    <div class="section-header reveal">
+      <div class="section-tag">// O que fazemos</div>
+      <h2 class="section-title">Reparo em <em>diversos</em> segmentos</h2>
+      <p class="section-sub">Atendemos desde equipamentos domésticos até eletrônica industrial, sempre com laudo técnico e garantia no serviço.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">🔧</div>
+        <h3>Placas Eletrônicas</h3>
+        <p>Diagnóstico e reparo em nível de componente — capacitores, transistores, ICs e microcontroladores. Salve seu equipamento sem trocar a placa inteira.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">💻</div>
+        <h3>Computadores e Notebooks</h3>
+        <p>Formatação, reinstalação, substituição de HD/SSD, troca de tela, limpeza e manutenção preventiva. Seu computador rápido de novo.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">🏭</div>
+        <h3>Eletrônica Industrial</h3>
+        <p>Reparo de inversores, CLPs, fontes chaveadas e painéis de controle. Reduzindo tempo de parada e custos de substituição.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">🎮</div>
+        <h3>Vídeo Games</h3>
+        <p>PS4, PS5, Xbox e Nintendo Switch — HDMI, leitor, fonte, controles. Sua diversão de volta sem demora.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="diferenciais">
+    <div class="section-header reveal">
+      <div class="section-tag">// Por que nos escolher</div>
+      <h2 class="section-title">Diferenciais <em>Ayllus Tech</em></h2>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-item reveal">
+        <div class="diff-num">01</div>
+        <div class="diff-icon">🔍</div>
+        <div class="diff-divider"></div>
+        <h3>Diagnóstico Sem Custo</h3>
+        <p>Avaliamos seu equipamento gratuitamente e apresentamos o orçamento antes de qualquer intervenção.</p>
+      </div>
+      <div class="diff-item reveal">
+        <div class="diff-num">02</div>
+        <div class="diff-icon">⚡</div>
+        <div class="diff-divider"></div>
+        <h3>Agilidade no Atendimento</h3>
+        <p>Atendimento rápido via WhatsApp e prazos definidos — sem você ficar esperando no escuro.</p>
+      </div>
+      <div class="diff-item reveal">
+        <div class="diff-num">03</div>
+        <div class="diff-icon">🛡️</div>
+        <div class="diff-divider"></div>
+        <h3>Garantia no Serviço</h3>
+        <p>Todos os reparos possuem garantia. Confiamos no nosso trabalho e queremos que você confie também.</p>
+      </div>
+      <div class="diff-item reveal">
+        <div class="diff-num">04</div>
+        <div class="diff-icon">🧠</div>
+        <div class="diff-divider"></div>
+        <h3>Reparo no Nível do Componente</h3>
+        <p>Resolvemos o problema real, sem trocar peças desnecessárias. Mais economia para você.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="cta-strip">
+    <div class="reveal">
+      <h2>Seu equipamento com defeito?<br>A gente resolve.</h2>
+      <p>Mande uma mensagem agora e receba um diagnóstico rápido.</p>
+      <a href="https://wa.me/5548933815336" target="_blank" class="btn-primary" style="display:inline-flex">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.558 4.136 1.535 5.876L.057 23.43a.75.75 0 00.918.932l5.762-1.512A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.718 9.718 0 01-4.963-1.363l-.355-.212-3.683.967.984-3.595-.232-.369A9.718 9.718 0 012.25 12C2.25 6.61 6.61 2.25 12 2.25S21.75 6.61 21.75 12 17.39 21.75 12 21.75z"/></svg>
+        Entrar em Contato
+      </a>
+    </div>
+  </div>
+
+  <section id="contato">
+    <div class="section-header reveal">
+      <div class="section-tag">// Fale conosco</div>
+      <h2 class="section-title">Entre em <em>contato</em></h2>
+      <p class="section-sub">Nos envie uma mensagem ou acesse diretamente pelo WhatsApp. Respondemos rápido!</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <div class="contact-item">
+          <div class="contact-item-icon">📱</div>
+          <div class="contact-item-text">
+            <label>WhatsApp</label>
+            <a href="https://wa.me/5548933815336" target="_blank">(48) 93381-5336</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">✉️</div>
+          <div class="contact-item-text">
+            <label>E-mail</label>
+            <a href="mailto:contato@ayllustech.com.br">contato@ayllustech.com.br</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-item-icon">🌐</div>
+          <div class="contact-item-text">
+            <label>Site</label>
+            <a href="https://www.ayllustech.com.br" target="_blank">www.ayllustech.com.br</a>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome</label>
+            <input type="text" placeholder="Seu nome" />
+          </div>
+          <div class="form-group">
+            <label>Telefone</label>
+            <input type="tel" placeholder="(48) 9 0000-0000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Serviço</label>
+          <select>
+            <option value="">Selecione o serviço...</option>
+            <option>Placas Eletrônicas</option>
+            <option>Computadores e Notebooks</option>
+            <option>Eletrônica Industrial</option>
+            <option>Vídeo Games</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descrição do problema</label>
+          <textarea placeholder="Descreva o defeito ou problema do seu equipamento..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="sendWhatsApp()">Enviar via WhatsApp ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Ayllus Tech · Todos os direitos reservados.</span>
+      <ul class="footer-links">
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#diferenciais">Diferenciais</a></li>
+        <li><a href="#contato">Contato</a></li>
+        <li><a href="https://wa.me/5548933815336" target="_blank">WhatsApp</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5548933815336" target="_blank" class="wa-float" title="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.558 4.136 1.535 5.876L.057 23.43a.75.75 0 00.918.932l5.762-1.512A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.718 9.718 0 01-4.963-1.363l-.355-.212-3.683.967.984-3.595-.232-.369A9.718 9.718 0 012.25 12C2.25 6.61 6.61 2.25 12 2.25S21.75 6.61 21.75 12 17.39 21.75 12 21.75z"/></svg>
+  </a>
+
+  <script>
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer  = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // WhatsApp form
+    function sendWhatsApp() {
+      const nome     = document.querySelector('input[placeholder="Seu nome"]').value.trim();
+      const telefone = document.querySelector('input[type="tel"]').value.trim();
+      const servico  = document.querySelector('select').value;
+      const descr    = document.querySelector('textarea').value.trim();
+      if (!nome || !descr) { alert('Por favor, preencha ao menos seu nome e a descrição do problema.'); return; }
+      const msg = `Olá! Sou *${nome}*${telefone ? ` (${telefone})` : ''} e gostaria de um orçamento.\n\n*Serviço:* ${servico || 'Não informado'}\n*Problema:* ${descr}`;
+      window.open(`https://wa.me/5548933815336?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+  </script>
+</body>
+</html>
